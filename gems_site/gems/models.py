@@ -7,9 +7,9 @@ from djmoney.models.fields import MoneyField
 class Gem(models.Model):
     size = models.FloatField(verbose_name='Размер')
     type = models.ForeignKey('GemType', on_delete=models.PROTECT, verbose_name='Тип камня')
-    clarity = models.CharField(max_length=7, verbose_name='Чистота')
+    clarity = models.CharField(max_length=2, verbose_name='Чистота')
     gem_image = models.ImageField(blank=True)
-    description = models.TextField(blank=True, verbose_name='Описание')
+    description = models.CharField(max_length=255, blank=True, verbose_name='Описание')
     price = MoneyField(max_digits=14, decimal_places=2, default_currency='RUB', verbose_name='Цена')
     owner = models.ForeignKey('GemOwner', on_delete=models.CASCADE, verbose_name='Продавец')
     is_available = models.BooleanField(verbose_name='Доступность')
@@ -23,8 +23,8 @@ class GemType(models.Model):
 
 
 class BaseUser(models.Model):
-    first_name = models.CharField(verbose_name='Имя')
-    last_name = models.CharField(verbose_name='Фамилия', blank=True)
+    first_name = models.CharField(max_length=70, verbose_name='Имя')
+    last_name = models.CharField(max_length=70, verbose_name='Фамилия', blank=True)
     email = models.EmailField(verbose_name='Email')
     phone_number = PhoneNumberField(verbose_name='Номер телефона', blank=True)
     user_alias = models.SlugField(verbose_name='Псевдоним', db_index=True)
@@ -33,7 +33,7 @@ class BaseUser(models.Model):
 
 
 class GemOwner(BaseUser):
-    organization = models.CharField(verbose_name='Названия организации', blank=True)
+    organization = models.CharField(max_length=70, verbose_name='Названия организации', blank=True)
     bank_account_number = models.BigIntegerField(verbose_name='Номер банковского аккаунта', blank=True)
 
 
