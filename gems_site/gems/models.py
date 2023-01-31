@@ -1,8 +1,9 @@
 from django.db import models
-from phonenumber_field.modelfields import PhoneNumberField
 from djmoney.models.fields import MoneyField
 
 # Create your models here.
+from phonenumber_field.modelfields import PhoneNumberField
+
 
 class Gem(models.Model):
     size = models.FloatField(verbose_name='Размер')
@@ -22,7 +23,7 @@ class GemType(models.Model):
     type = models.CharField(max_length=50, verbose_name='Тип камня')
 
 
-class BaseUser(models.Model):
+class BaseUserMixin(models.Model):
     first_name = models.CharField(max_length=70, verbose_name='Имя')
     last_name = models.CharField(max_length=70, verbose_name='Фамилия', blank=True)
     email = models.EmailField(verbose_name='Email')
@@ -31,11 +32,14 @@ class BaseUser(models.Model):
     logo = models.ImageField(verbose_name='Лого', blank=True)
     date_created = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
 
+    class Meta:
+        abstract = True
 
-class GemOwner(BaseUser):
+
+class GemOwner(BaseUserMixin):
     organization = models.CharField(max_length=70, verbose_name='Названия организации', blank=True)
     bank_account_number = models.BigIntegerField(verbose_name='Номер банковского аккаунта', blank=True)
 
 
-class GemCustomer(BaseUser):
+class GemCustomer(BaseUserMixin):
     pass
