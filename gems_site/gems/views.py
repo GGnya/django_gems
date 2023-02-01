@@ -35,7 +35,7 @@ class GemsHome(ListView):
 class CreateGem(CreateView):
     form_class = CreateGemForm
     template_name = 'gems/create_gem.html'
-    success_url = reverse_lazy('')
+    success_url = reverse_lazy('home')
     # login_url = reverse_lazy('')
 
     # def get_context_data(self, *, object_list=None, **kwargs):

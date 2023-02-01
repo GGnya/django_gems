@@ -5,9 +5,13 @@
     <title>{{title}}</title>
 </head>
 <body>
-{% for g in gems %}
-<h2>{{g.title}}</h2>
-{{ g }}
+{% for gem in gems %}
+<h2>{{gem.title}}</h2>
+{{gem.size}}
+{{gem.type}}
+{{gem.clarity}}
+{{gem.description}}
+{{gem.price}}
 {% endfor %}
 </body>
 </html>
