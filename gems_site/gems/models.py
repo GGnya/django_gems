@@ -8,12 +8,19 @@ from pytils.translit import slugify
 # Create your models here.
 from phonenumber_field.modelfields import PhoneNumberField
 from autoslug import AutoSlugField
+from uuslug import uuslug
 
+from gems.utils import title_to_slug, replacer_empty_to_minus
+
+def instance_gem_slug(instance):
+    return instance.title
+def slugify_value(value):
+    return value.replace(' ', '-')
 
 class Gem(models.Model):
     title = models.CharField(max_length=255, verbose_name='Заголовок')
-    slug = AutoSlugField(populate_from=(lambda instance: slugify(instance.title)),
-                         slugify=lambda value: value.replace(' ', '-'),
+    slug = AutoSlugField(populate_from=instance_gem_slug,
+                         slugify=slugify_value,
                          unique=True, db_index=True, verbose_name="URL")
     size = models.FloatField(verbose_name='Размер')
     type = models.ForeignKey('GemType', on_delete=models.PROTECT, verbose_name='Тип камня')
@@ -29,6 +36,10 @@ class Gem(models.Model):
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        self.slug = uuslug(self.title, instance=self)
+        super(Gem, self).save(*args, **kwargs)
 
 class GemType(models.Model):
     type = models.CharField(max_length=50, verbose_name='Тип камня')
