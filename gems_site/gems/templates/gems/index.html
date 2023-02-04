@@ -5,6 +5,12 @@
     <title>{{title}}</title>
 </head>
 <body>
+
+{% if request.user.is_authenticated %}
+<li class="last"> {{user.username}} | <a href="{% url 'logout' %}">Выйти</a></li>
+{% else %}
+<li class="last"><a href="{% url 'register' %}" >Регистрация</a> | <a href="{% url 'login' %}">Войти</a></li>
+{% endif %}
 {% for gem in gems %}
 <h2>{{gem.title}}</h2>
 {{gem.size}}
