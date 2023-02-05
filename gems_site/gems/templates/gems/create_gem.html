@@ -1,10 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'gems/base.html' %}
 {% block content %}
 <h1>{{title}}</h1>
 <form action="{% url 'create_gem' %}" method="post" enctype="multipart/form-data">
@@ -21,5 +15,3 @@
     <button type="submit">Добавить</button>
 </form>
 {% endblock %}
-</body>
-</html>

@@ -1,8 +1,9 @@
+{% extends 'gems/base.html' %}
 {% block content %}
 {% if user.is_authenticated %}
   Hi {{ user.username }}!
     {{ user.email }}
-    {{ user.user_alias }}
+    {{ user.profile.user_alias }}
     {{ profile.date_created }}
 {% else %}
   <p>You are not logged in</p>

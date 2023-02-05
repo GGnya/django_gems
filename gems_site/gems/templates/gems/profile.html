@@ -1,10 +1,12 @@
+{% extends 'gems/base.html' %}
 {% block content %}
 {% if user.is_authenticated %}
   Hi {{ user.username }}!
     {{ user.email }}
-    {{ user.user_alias }}
+    {{ user.profile.user_alias }}
     {{ user.profile.date_created }}
-    {{ user.profile.email }}
+    {{ user.email }}
+    {{ user.profile.phone_number }}
 {% else %}
   <p>You are not logged in</p>
   <a href="{% url 'login' %}">Log In</a>
