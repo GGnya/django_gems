@@ -9,10 +9,14 @@ from gems.models import Profile
 def create_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(username=instance,
-                               email=instance.email,
                                user_alias=instance.username)
 
 
 @receiver(post_save, sender=User)
 def save_profile(sender, instance, **kwargs):
     instance.profile.save()
+
+# @receiver(post_save, sender=User)
+# def create_gem(sender, instance, created, **kwargs):
+#     if created:
+#         Gem.objects.

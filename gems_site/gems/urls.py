@@ -2,11 +2,11 @@ from django.urls import path
 
 # from gems.views import logout_user, LoginUser, RegisterUser
 from gems.views import GemsHome, CreateGem, RegisterUser, LoginUser, Basket, Profile, ShowProfilePageView, profile, \
-    logout_user
+    logout_user, create_gem
 
 urlpatterns = [
     path('', GemsHome.as_view(), name='home'),
-    path('create_gem/', CreateGem.as_view(), name='create_gem'),
+    path('create_gem/', create_gem, name='create_gem'),
     path('register/', RegisterUser.as_view(), name='register'),
     path('login/', LoginUser.as_view(), name='login'),
     path('basket/', Basket.as_view(), name='basket'),

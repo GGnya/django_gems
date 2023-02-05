@@ -32,7 +32,7 @@ class Gem(models.Model):
     gem_image = models.ImageField(blank=True)
     description = models.CharField(max_length=255, blank=True, verbose_name='Описание')
     price = MoneyField(max_digits=14, decimal_places=2, default_currency='RUB', verbose_name='Цена')
-    # owner = models.ForeignKey('Profile', on_delete=models.CASCADE, verbose_name='Продавец', related_name='owner_set')
+    owner = models.ForeignKey('auth.User', on_delete=models.CASCADE, verbose_name='Продавец', blank=True, null=True)
     is_available = models.BooleanField(verbose_name='Доступность')
     date_created = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     date_updated = models.DateTimeField(auto_now=True, verbose_name='Дата последнего редактирования')
@@ -44,6 +44,8 @@ class Gem(models.Model):
 
     def save(self, *args, **kwargs):
         self.slug = uuslug(self.title, instance=self)
+        # if request:
+        #     self.owner = request.user.pk
         super(Gem, self).save(*args, **kwargs)
 
 
@@ -56,10 +58,10 @@ class GemType(models.Model):
 
 class Profile(models.Model):
     username = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='Логин')
-    first_name = models.CharField(max_length=70, verbose_name='Имя', blank=True)
-    last_name = models.CharField(max_length=70, verbose_name='Фамилия', blank=True)
-    email = models.EmailField(verbose_name='Email')
-    # phone_number = PhoneNumberField(verbose_name='Номер телефона', blank=True)
+    # first_name = models.CharField(max_length=70, verbose_name='Имя', blank=True)
+    # last_name = models.CharField(max_length=70, verbose_name='Фамилия', blank=True)
+    # email = models.EmailField(verbose_name='Email')
+    phone_number = PhoneNumberField(verbose_name='Номер телефона', blank=True)
     user_alias = models.SlugField(verbose_name='Псевдоним', db_index=True)
     # logo = models.ImageField(verbose_name='Лого', blank=True)
     date_created = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')

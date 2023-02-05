@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView
 
 from django.db import transaction
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 
 from django.urls import reverse_lazy
@@ -19,22 +20,40 @@ class GemsHome(ListView):
     template_name = 'gems/index.html'
     context_object_name = 'gems'
 
-
     def get_queryset(self):
+        # print(Gem.objects.filter(owner__isnull=False).select_related('type'))
         return Gem.objects.filter(is_available=True).select_related('type')
 
 
 class CreateGem(CreateView):
-    form_class = CreateGemForm
-    template_name = 'gems/create_gem.html'
-    success_url = reverse_lazy('home')
+    pass
+    # form_class = CreateGemForm
+    # # initial = {'owner': None}
+    # template_name = 'gems/create_gem.html'
+    # success_url = reverse_lazy('home')
+
+
+@login_required
+def create_gem(request):
+    form = CreateGemForm(request.POST or None)
+    if request.method == "POST":
+        if form.is_valid():
+            gem = form.save(commit=False)
+            gem.owner_id = request.user.pk
+            gem.save()
+            return redirect('home')
+    return render(request, 'gems/create_gem.html', locals())
+
+
+def post_new(request):
+    form = CreateGemForm()
+    return render(request, 'blog/post_edit.html', {'form': form})
 
 
 class RegisterUser(CreateView):
     form_class = RegisterUserForm
     template_name = 'gems/register.html'
     success_url = reverse_lazy('login')
-
 
     def form_valid(self, form):
         user = form.save()
@@ -73,11 +92,11 @@ def profile(request):
     return render(request, 'gems/update_profile.html', {'user_form': user_form, 'profile_form': profile_form})
 
 
-
 class Basket(CreateView):
     pass
     # form_class = BasketForm
     # template_name = 'gems/basket.html'
+
 
 def logout_user(request):
     logout(request)
