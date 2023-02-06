@@ -33,7 +33,7 @@ class CreateGem(CreateView):
     # success_url = reverse_lazy('home')
 
 
-@login_required
+
 def create_gem(request):
     form = CreateGemForm(request.POST or None)
     if request.method == "POST":
@@ -43,11 +43,6 @@ def create_gem(request):
             gem.save()
             return redirect('home')
     return render(request, 'gems/create_gem.html', locals())
-
-
-def post_new(request):
-    form = CreateGemForm()
-    return render(request, 'blog/post_edit.html', {'form': form})
 
 
 class RegisterUser(CreateView):
