@@ -1,8 +1,10 @@
 from django.contrib import messages
-from django.contrib.auth import login, logout
+from django.contrib.auth import login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import User
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, PasswordResetView
+from django.contrib.messages.views import SuccessMessageMixin
 
 from django.db import transaction
 from django.http import HttpResponseRedirect
@@ -31,7 +33,6 @@ class CreateGem(CreateView):
     # # initial = {'owner': None}
     # template_name = 'gems/create_gem.html'
     # success_url = reverse_lazy('home')
-
 
 
 def create_gem(request):
@@ -96,3 +97,46 @@ class Basket(CreateView):
 def logout_user(request):
     logout(request)
     return redirect('login')
+
+
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important!
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect('profile')
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, 'gems/change_password.html', {
+        'form': form
+    })
+
+# def restore_password(request):
+#     if request.method == 'POST':
+#         form = PasswordChangeForm(request.user, request.POST)
+#         if form.is_valid():
+#             user = form.save()
+#             update_session_auth_hash(request, user)  # Important!
+#             messages.success(request, 'Your password was successfully updated!')
+#             return redirect('profile')
+#         else:
+#             messages.error(request, 'Please correct the error below.')
+#     else:
+#         form = PasswordChangeForm(request.user)
+#     return render(request, 'gems/change_password.html', {
+#         'form': form
+#     })
+
+class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
+    template_name = 'gems/password_reset.html'
+    email_template_name = 'gems/password_email_reset.html'
+    subject_template_name = 'gems/password_reset_subject'
+    success_message = "We've emailed you instructions for setting your password, " \
+                      "if an account exists with the email you entered. You should receive them shortly." \
+                      " If you don't receive an email, " \
+                      "please make sure you've entered the address you registered with, and check your spam folder."
+    success_url = reverse_lazy('home')
