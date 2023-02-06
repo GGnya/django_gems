@@ -1,17 +1,24 @@
 {% extends 'gems/base.html' %}
 {% block content %}
-<h1>{{title}}</h1>
-<form action="{% url 'create_gem' %}" method="post" enctype="multipart/form-data">
+{% if user.is_authenticated %}
+    <form action="{% url 'create_gem' %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
-
     <div class="form-error">{{ form.non_field_errors }}</div>
-
     {% for f in form %}
-    <p><label class="form-label" for="{{ f.id_for_label }}">{{f.label}}:</label>{{ f }} </p>
+    <p>
+        <label class="form-label" for="{{ f.id_for_label }}">
+            {{f.label}}:
+        </label>{{ f }}
+    </p>
     <div class="form-error">{{ f.errors }}</div>
 
     {% endfor %}
 
     <button type="submit">Добавить</button>
-</form>
+    </form>
+{% else %}
+  <p>You are not logged in</p>
+  <a href="{% url 'login' %}">Log In</a>
+{% endif %}
+
 {% endblock %}

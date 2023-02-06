@@ -7,11 +7,12 @@
     {{ user.profile.date_created }}
     {{ user.email }}
     {{ user.profile.phone_number }}
+    <form action="{% url 'update_profile' %}">
+   <button>Изменить данные</button>
+  </form>
 {% else %}
   <p>You are not logged in</p>
   <a href="{% url 'login' %}">Log In</a>
 {% endif %}
-    <form action="{% url 'update_profile' %}">
-   <button>Изменить данные</button>
-  </form>
+
 {% endblock %}
