@@ -57,7 +57,6 @@ class CreateGemForm(forms.ModelForm):
         return title
 
 
-
 class UpdateUserForm(forms.ModelForm):
     username = forms.CharField(max_length=100,
                                required=True,
@@ -74,8 +73,6 @@ class UpdateUserForm(forms.ModelForm):
 
 
 class UpdateProfileForm(forms.ModelForm):
-    # first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-input'}))
-    # last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-input'}))
     email = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-input'}))
     user_alias = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-input'}))
     phone_number = PhoneNumberField(region='RU', widget=PhoneNumberPrefixWidget)

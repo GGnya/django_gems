@@ -11,7 +11,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, ListView, DetailView, FormView
+from django.views.generic import CreateView, ListView, DetailView, FormView, UpdateView
 
 from gems.forms import CreateGemForm, RegisterUserForm, LoginUserForm, ProfileForm, UpdateUserForm, UpdateProfileForm
 from gems.models import Gem, Profile
@@ -28,22 +28,21 @@ class GemsHome(ListView):
 
 
 class CreateGem(CreateView):
-    pass
-    # form_class = CreateGemForm
-    # # initial = {'owner': None}
-    # template_name = 'gems/create_gem.html'
-    # success_url = reverse_lazy('home')
+    form_class = CreateGemForm
+    template_name = 'gems/create_gem.html'
+    success_url = reverse_lazy('home')
+
+    def post(self, request, *args, **kwargs):
+        form = CreateGemForm(request.POST or None)
+        if request.method == "POST":
+            if form.is_valid():
+                gem = form.save(commit=False)
+                gem.owner_id = request.user.pk
+                gem.save()
+                return redirect('home')
+        return render(request, 'gems/create_gem.html', locals())
 
 
-def create_gem(request):
-    form = CreateGemForm(request.POST or None)
-    if request.method == "POST":
-        if form.is_valid():
-            gem = form.save(commit=False)
-            gem.owner_id = request.user.pk
-            gem.save()
-            return redirect('home')
-    return render(request, 'gems/create_gem.html', locals())
 
 
 class RegisterUser(CreateView):
@@ -70,8 +69,54 @@ class ShowProfilePageView(ListView):
     template_name = 'gems/profile.html'
 
 
+# class UpdateProfile(UpdateView):
+#     model = Profile
+#     form_class = UpdateUserForm
+#     second_form_class = UpdateProfileForm
+#     template_name = 'gems/update_profile.html'
+#
+#     def get_context_data(self, **kwargs):
+#         context = super(UpdateProfile, self).get_context_data(**kwargs)
+#         # print(context)
+#
+#         if 'form' not in context:
+#             context['form'] = self.form_class()
+#
+#         if 'form2' not in context:
+#             # context = self.second_form_class()
+#             context['form2'] = self.second_form_class()
+#         return context
+#
+#     def form_invalid(self, **kwargs):
+#         return self.render_to_response(self.get_context_data(**kwargs))
+#
+#     def get_object(self, query_set=None):
+#         # print(get_object_or_404(User, pk=self.request.session['_auth_user_id']))
+#         print(get_object_or_404(Profile, username=self.request.session['_auth_user_id']))
+#         return get_object_or_404(Profile, username=self.request.session['_auth_user_id'])
+#
+#     def post(self, request, *args, **kwargs):
+#         self.object = self.get_object()
+#         print(self.object)
+#         if 'form' in request.POST:
+#             form_class = self.form_class
+#             form_name = 'form'
+#         if 'form2' in request.POST:
+#         # else:
+#             form_class = self.second_form_class
+#             form_name = 'form2'
+#
+#         form = self.get_form(form_class)
+#         print(form)
+#
+#         if form.is_valid():
+#             return self.form_valid(form)
+#         else:
+#             return self.form_invalid(**{form_name: form})
+
+
 @login_required
-def profile(request):
+def update_profile(request):
     if request.method == 'POST':
         user_form = UpdateUserForm(request.POST, instance=request.user)
         profile_form = UpdateProfileForm(request.POST, instance=request.user.profile)
@@ -116,22 +161,6 @@ def change_password(request):
     })
 
 
-# def restore_password(request):
-#     if request.method == 'POST':
-#         form = PasswordChangeForm(request.user, request.POST)
-#         if form.is_valid():
-#             user = form.save()
-#             update_session_auth_hash(request, user)  # Important!
-#             messages.success(request, 'Your password was successfully updated!')
-#             return redirect('profile')
-#         else:
-#             messages.error(request, 'Please correct the error below.')
-#     else:
-#         form = PasswordChangeForm(request.user)
-#     return render(request, 'gems/change_password.html', {
-#         'form': form
-#     })
-
 class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
     template_name = 'gems/password_reset.html'
     email_template_name = 'gems/password_email_reset.html'
@@ -159,6 +188,4 @@ class ShowMyGems(ListView):
         # print(Gem.objects.filter(owner__isnull=False).select_related('type'))
         user = self.request.user
         return Gem.objects.filter(owner=user).select_related('type')
-
-
 

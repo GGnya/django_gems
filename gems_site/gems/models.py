@@ -46,8 +46,6 @@ class Gem(models.Model):
     def save(self, *args, **kwargs):
         last_id = Gem.objects.last().pk
         self.slug = uuslug(self.title, instance=self) + str(last_id + 1)
-
-
         super(Gem, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
