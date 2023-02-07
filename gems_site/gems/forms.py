@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from phonenumber_field.formfields import PhoneNumberField
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django import forms
@@ -54,6 +55,7 @@ class CreateGemForm(forms.ModelForm):
         if len(title) > 255:
             raise ValidationError('Длина превышает 255 символов')
         return title
+
 
 
 class UpdateUserForm(forms.ModelForm):

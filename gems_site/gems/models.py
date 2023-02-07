@@ -43,7 +43,10 @@ class Gem(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
-        self.slug = uuslug(self.title, instance=self)
+        last_id = Gem.objects.last().pk
+        self.slug = uuslug(self.title, instance=self) + str(last_id + 1)
+
+
         # if request:
         #     self.owner = request.user.pk
         super(Gem, self).save(*args, **kwargs)
