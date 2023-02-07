@@ -4,22 +4,31 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link type="text/css" href="{% static 'css/styles.css' %}" rel="stylesheet" />
     <title>{{title}}</title>
 </head>
 <body>
 {% block mainmenu %}
-{% show_main_menu %}
+    <header>
+
+    <div class="header">
+        <ul id="mainmenu" class="mainmenu">
+            {% show_main_menu %}
 				{% if request.user.is_authenticated %}
 				<li class="last"> {{user.username}} | <a href="{% url 'logout' %}">Выйти</a></li>
 				{% else %}
 				<li class="last"><a href="{% url 'register' %}" >Регистрация</a> | <a href="{% url 'login' %}">Войти</a></li>
 				{% endif %}
-			</ul>
+        </ul>
 			<div class="clear"></div>
 		</div>
+</header>
 {% endblock mainmenu %}
 
 {% block content %}
 {% endblock %}
+<footer>
+    <p>© 2023 GGnya</p>
+</footer>
 </body>
 </html>
