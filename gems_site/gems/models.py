@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.urls import reverse
 from djmoney.models.fields import MoneyField
 from pytils.translit import slugify
 
@@ -47,9 +48,10 @@ class Gem(models.Model):
         self.slug = uuslug(self.title, instance=self) + str(last_id + 1)
 
 
-        # if request:
-        #     self.owner = request.user.pk
         super(Gem, self).save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse('gem', kwargs={'gem_slug': self.slug})
 
 
 class GemType(models.Model):

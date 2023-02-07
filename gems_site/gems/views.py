@@ -11,7 +11,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, ListView, DetailView
+from django.views.generic import CreateView, ListView, DetailView, FormView
 
 from gems.forms import CreateGemForm, RegisterUserForm, LoginUserForm, ProfileForm, UpdateUserForm, UpdateProfileForm
 from gems.models import Gem, Profile
@@ -115,6 +115,7 @@ def change_password(request):
         'form': form
     })
 
+
 # def restore_password(request):
 #     if request.method == 'POST':
 #         form = PasswordChangeForm(request.user, request.POST)
@@ -140,3 +141,24 @@ class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
                       " If you don't receive an email, " \
                       "please make sure you've entered the address you registered with, and check your spam folder."
     success_url = reverse_lazy('home')
+
+
+class ShowGem(DetailView):
+    model = Gem
+    template_name = 'gems/gem.html'
+    slug_url_kwarg = 'gem_slug'
+    context_object_name = 'gem'
+
+
+class ShowMyGems(ListView):
+    model = Gem
+    template_name = 'gems/index.html'
+    context_object_name = 'gems'
+
+    def get_queryset(self):
+        # print(Gem.objects.filter(owner__isnull=False).select_related('type'))
+        user = self.request.user
+        return Gem.objects.filter(owner=user).select_related('type')
+
+
+

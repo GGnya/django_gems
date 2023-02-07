@@ -1,0 +1,21 @@
+{% extends 'gems/base.html' %}
+
+{% block content %}
+<h1>{{gem.title}}</h1>
+
+{% if gem.photo %}
+<p><img class="img-article-left" src="{{gem.photo.url}}"></p>
+{% endif %}
+    <p>Характеристики</p>
+<br>Тип: {{ gem.type}}
+<br>Размер: {{ gem.size}}
+<br>Чистота:{{ gem.clarity}}
+<br>Описание: {{ gem.description}}
+<br>Цена: {{ gem.price}}
+<br>Продавец: {{ gem.owner }}
+<br>{% if gem.is_available %}Доступен для покупки
+    {% else %} Товар уже продан
+    {% endif %}
+<br>Выставлен на продажу: {{ gem.date_created}}
+
+{% endblock %}

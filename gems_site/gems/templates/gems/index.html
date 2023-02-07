@@ -2,7 +2,7 @@
 
 {% block content %}
 {% for gem in gems %}
-<h2>{{gem.title}}</h2>
+<h2><a href="{{ gem.get_absolute_url }}">{{gem.title}}</a></h2>
 {{gem.size}}
 {{gem.type}}
 {{gem.clarity}}
