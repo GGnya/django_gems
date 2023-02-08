@@ -2,7 +2,7 @@ from django.urls import path
 from django.contrib.auth import views as auth_views
 
 from gems.views import GemsHome, CreateGem, RegisterUser, LoginUser, Basket, Profile, ShowProfilePageView, \
-    logout_user, change_password, ResetPasswordView, ShowGem, ShowMyGems, update_profile
+    logout_user, change_password, ResetPasswordView, ShowGem, ShowMyGems, UpdateProfile
 
 urlpatterns = [
     path('', GemsHome.as_view(), name='home'),
@@ -11,7 +11,7 @@ urlpatterns = [
     path('login/', LoginUser.as_view(), name='login'),
     path('basket/', Basket.as_view(), name='basket'),
     path('profile/', ShowProfilePageView.as_view(), name='profile'),
-    path('update_profile/', update_profile, name='update_profile'),
+    path('update_profile/', UpdateProfile.as_view(), name='update_profile'),
     path('logout/', logout_user, name='logout'),
     path('update_profile/change_password/', change_password, name='change_password'),
     path('password-reset/', ResetPasswordView.as_view(), name='password_reset'),
