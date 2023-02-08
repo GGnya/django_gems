@@ -15,8 +15,6 @@ class RegisterUserForm(UserCreationForm):
     password1 = forms.CharField(label='Пароль', widget=forms.PasswordInput(attrs={'class': 'form-input'}))
     password2 = forms.CharField(label='Повтор пароля', widget=forms.PasswordInput(attrs={'class': 'form-input'}))
 
-    # user_alias = forms.SlugField(label='Псевдоним', widget=forms.TextInput(attrs={'class': 'form-input'}))
-
     class Meta:
         model = User
         fields = ('username', 'email', 'password1', 'password2')
@@ -48,7 +46,6 @@ class CreateGemForm(forms.ModelForm):
                   'description',
                   'price',
                   'is_available']
-        # exclude = ['date_created', 'date_updated', 'owner']
 
     def clean_title(self):
         title = self.cleaned_data['title']

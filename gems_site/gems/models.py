@@ -1,17 +1,10 @@
 from django.contrib.auth.models import User
 from django.db import models
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from django.urls import reverse
 from djmoney.models.fields import MoneyField
-from pytils.translit import slugify
-
-# Create your models here.
 from phonenumber_field.modelfields import PhoneNumberField
 from autoslug import AutoSlugField
 from uuslug import uuslug
-
-from gems.utils import title_to_slug, replacer_empty_to_minus
 
 
 def instance_gem_slug(instance):
@@ -38,8 +31,6 @@ class Gem(models.Model):
     date_created = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     date_updated = models.DateTimeField(auto_now=True, verbose_name='Дата последнего редактирования')
 
-    # customer = models.ForeignKey('Profile', on_delete=models.PROTECT, verbose_name='Покупатель', related_name='customer_set')
-
     def __str__(self):
         return self.title
 
@@ -61,16 +52,9 @@ class GemType(models.Model):
 
 class Profile(models.Model):
     username = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='Логин')
-    # first_name = models.CharField(max_length=70, verbose_name='Имя', blank=True)
-    # last_name = models.CharField(max_length=70, verbose_name='Фамилия', blank=True)
-    # email = models.EmailField(verbose_name='Email')
     phone_number = PhoneNumberField(verbose_name='Номер телефона', blank=True)
     user_alias = models.SlugField(verbose_name='Псевдоним', db_index=True)
-    # logo = models.ImageField(verbose_name='Лого', blank=True)
     date_created = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
-    # organization = models.CharField(max_length=70, verbose_name='Названия организации', blank=True)
-    # bank_account_number = models.BigIntegerField(verbose_name='Номер банковского аккаунта', blank=True, default=None)
 
     def __str__(self):
         return self.username.username
-

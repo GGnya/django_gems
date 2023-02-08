@@ -1,19 +1,13 @@
 from django.contrib import messages
 from django.contrib.auth import login, logout, update_session_auth_hash
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView, PasswordResetView
 from django.contrib.messages.views import SuccessMessageMixin
-
-from django.db import transaction
-from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import render, redirect, get_object_or_404
-
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, ListView, DetailView, FormView, UpdateView
-
-from gems.forms import CreateGemForm, RegisterUserForm, LoginUserForm, ProfileForm, UpdateUserForm, UpdateProfileForm
+from django.views.generic import CreateView, ListView, DetailView, UpdateView
+from gems.forms import CreateGemForm, RegisterUserForm, LoginUserForm, UpdateUserForm, UpdateProfileForm
 from gems.models import Gem, Profile
 
 
@@ -23,7 +17,6 @@ class GemsHome(ListView):
     context_object_name = 'gems'
 
     def get_queryset(self):
-        # print(Gem.objects.filter(owner__isnull=False).select_related('type'))
         return Gem.objects.filter(is_available=True).select_related('type')
 
 
@@ -110,13 +103,6 @@ class EditGem(UpdateView):
             return super(EditGem, self).post(request, *args, **kwargs)
 
 
-
-class Basket(CreateView):
-    pass
-    # form_class = BasketForm
-    # template_name = 'gems/basket.html'
-
-
 def logout_user(request):
     logout(request)
     return redirect('login')
@@ -171,6 +157,5 @@ class ShowMyGems(ListView):
     context_object_name = 'gems'
 
     def get_queryset(self):
-        # print(Gem.objects.filter(owner__isnull=False).select_related('type'))
         user = self.request.user
         return Gem.objects.filter(owner=user).select_related('type')
