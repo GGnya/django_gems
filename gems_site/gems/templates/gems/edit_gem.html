@@ -1,0 +1,12 @@
+{% extends 'gems/base.html' %}
+{% block content %}
+    {% if user == gem.owner %}
+
+    <form method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Update">
+    {% else %}
+        u have no permission
+    </form>
+    {% endif %}
+{% endblock %}

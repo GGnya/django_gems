@@ -2,7 +2,7 @@ from django.urls import path
 from django.contrib.auth import views as auth_views
 
 from gems.views import GemsHome, CreateGem, RegisterUser, LoginUser, Basket, Profile, ShowProfilePageView, \
-    logout_user, change_password, ResetPasswordView, ShowGem, ShowMyGems, UpdateProfile
+    logout_user, change_password, ResetPasswordView, ShowGem, ShowMyGems, UpdateProfile, EditGem
 
 urlpatterns = [
     path('', GemsHome.as_view(), name='home'),
@@ -22,9 +22,7 @@ urlpatterns = [
          auth_views.PasswordResetCompleteView.as_view(template_name='gems/password_reset_complete.html'),
          name='password_reset_complete'),
     path('gem/<slug:gem_slug>/', ShowGem.as_view(), name='gem'),
-    path('my_gems', ShowMyGems.as_view(), name='mygems')
+    path('my_gems', ShowMyGems.as_view(), name='mygems'),
+    path('gem/edit_gem/<slug:gem_slug>/', EditGem.as_view(), name='edit_gem')
 
-    # path('login/', LoginUser.as_view(), name='login'),
-    # path('logout/', logout_user, name='logout'),
-    # path('register/', RegisterUser.as_view(), name='register'),
 ]

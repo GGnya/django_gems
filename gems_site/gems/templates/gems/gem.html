@@ -13,9 +13,20 @@
 <br>Описание: {{ gem.description}}
 <br>Цена: {{ gem.price}}
 <br>Продавец: {{ gem.owner }}
+    {% if phone_number %}
+        Телефон: {{ phone_number }}
+    {% endif %}
+    {% if email %} email: {{ email }}
+    {% endif %}
 <br>{% if gem.is_available %}Доступен для покупки
     {% else %} Товар уже продан
     {% endif %}
 <br>Выставлен на продажу: {{ gem.date_created}}
+
+{% if gem.owner == user %}
+    <button><a href={% url 'edit_gem' gem.slug %}>Изменить</a></button>
+{% else %}
+    <button>Связаться с продавцом</button>
+{% endif %}
 
 {% endblock %}

@@ -7,7 +7,7 @@ from django.contrib.auth.views import LoginView, PasswordResetView
 from django.contrib.messages.views import SuccessMessageMixin
 
 from django.db import transaction
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 
 from django.urls import reverse_lazy
@@ -67,85 +67,6 @@ class ShowProfilePageView(ListView):
     template_name = 'gems/profile.html'
 
 
-# class UpdateProfile(UpdateView):
-#     model = Profile
-#     form_class = UpdateUserForm
-#     second_form_class = UpdateProfileForm
-#     template_name = 'gems/update_profile.html'
-#
-#     def get_context_data(self, **kwargs):
-#         # context = super(UpdateProfile, self).get_context_data(**kwargs)
-#         # # print(context)
-#         #
-#         # if 'form' not in context:
-#         #     kwargs['form'] = self.form_class(instance=self.get_object())
-#         #
-#         # if 'form2' not in context:
-#         #     # context = self.second_form_class()
-#         #     self.second_form_class(instance=self.get_object().username)
-#         #     # context['form2'] = self.second_form_class()
-#         # return context
-#
-#         context = super(UpdateProfile, self).get_context_data(**kwargs)
-#         print(context)
-#         if 'form' not in context:
-#             # print(self.request.GET.user.pk)
-#             context['form'] = self.form_class(self.request.GET)
-#         if 'form2' not in context:
-#             # print(self.second_form_class(self.request.GET))
-#             context['form2'] = self.second_form_class(self.request.GET)
-#
-#         return context
-#
-#     def form_invalid(self, **kwargs):
-#         return self.render_to_response(self.get_context_data(**kwargs))
-#
-#     def get_object(self, query_set=None):
-#         # print(get_object_or_404(User, pk=self.request.session['_auth_user_id']))
-#         # print(get_object_or_404(Profile, username=self.request.session['_auth_user_id']))
-#         return get_object_or_404(User, pk=self.request.session['_auth_user_id'])
-#
-#     def get(self, request, *args, **kwargs):
-#         super(UpdateProfile, self).get(request, *args, **kwargs)
-#
-#         form = self.form_class
-#         form2 = self.second_form_class
-#         # print(self.get_object())
-#         return self.render_to_response(self.get_context_data(
-#             object=self.object, form=form, form2=form2))
-#     def post(self, request, *args, **kwargs):
-#         self.object = self.get_object()
-#
-#         form = self.form_class(request.POST)
-#         form2 = self.second_form_class(request.POST)
-#         if form.is_valid() and form2.is_valid():
-#             userdata = form.save(commit=False)
-#             userdata.save()
-#             profileedata = form2.save(commit=False)
-#             profileedata.user = userdata
-#             profileedata.save()
-#             messages.success(self.request, 'Settings saved successfully')
-#             return HttpResponseRedirect(self.get_success_url())
-#         else:
-#             return self.render_to_response(
-#                 self.get_context_data(form=form, form2=form2))
-#         if 'form' in request.POST:
-#             form_class = self.form_class
-#             form_name = 'form'
-#         if 'form2' in request.POST:
-#         # else:
-#             form_class = self.second_form_class
-#             form_name = 'form2'
-#
-#         form = self.get_form(form_class)
-#         print(form)
-#
-#         if form.is_valid():
-#             return self.form_valid(form)
-#         else:
-#             return self.form_invalid(**{form_name: form})
-
-
 class UpdateProfile(UpdateView):
     model = Profile
     form_class = UpdateProfileForm
@@ -156,6 +77,7 @@ class UpdateProfile(UpdateView):
         user_form = UpdateUserForm(instance=self.request.user)
         profile_form = UpdateProfileForm(instance=self.request.user.profile)
         return render(self.request, 'gems/update_profile.html', {'user_form': user_form, 'profile_form': profile_form})
+
     def post(self, request, *args, **kwargs):
         user_form = UpdateUserForm(request.POST, instance=request.user)
         profile_form = UpdateProfileForm(request.POST, instance=request.user.profile)
@@ -164,6 +86,28 @@ class UpdateProfile(UpdateView):
             profile_form.save()
             messages.success(request, 'Your profile is updated successfully')
             return redirect(to='profile')
+
+
+class EditGem(UpdateView):
+    model = Gem
+    template_name = 'gems/edit_gem.html'
+    form_class = CreateGemForm
+    slug_url_kwarg = 'gem_slug'
+
+    def get_object(self, queryset=None):
+        try:
+            return super(EditGem, self).get_object(queryset)
+        except AttributeError:
+            return None
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super(EditGem, self).get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.request.user == self.object.owner:
+            return super(EditGem, self).post(request, *args, **kwargs)
 
 
 
@@ -211,6 +155,14 @@ class ShowGem(DetailView):
     template_name = 'gems/gem.html'
     slug_url_kwarg = 'gem_slug'
     context_object_name = 'gem'
+
+    def get_context_data(self, **kwargs):
+        context = super(ShowGem, self).get_context_data(**kwargs)
+        user_info = User.objects.get(username=context['object'].owner)
+        profile_info = Profile.objects.get(username=context['object'].owner)
+        context['email'] = user_info.email
+        context['phone_number'] = profile_info.phone_number
+        return context
 
 
 class ShowMyGems(ListView):
