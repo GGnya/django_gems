@@ -23,7 +23,7 @@ class Gem(models.Model):
     size = models.FloatField(verbose_name='Размер')
     type = models.ForeignKey('GemType', on_delete=models.PROTECT, verbose_name='Тип камня')
     clarity = models.CharField(max_length=2, verbose_name='Чистота')
-    gem_image = models.ImageField(blank=True)
+    gem_image = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True)
     description = models.CharField(max_length=255, blank=True, verbose_name='Описание')
     price = MoneyField(max_digits=14, decimal_places=2, default_currency='RUB', verbose_name='Цена')
     owner = models.ForeignKey('auth.User', on_delete=models.CASCADE, verbose_name='Продавец', blank=True, null=True)

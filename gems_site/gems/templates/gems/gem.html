@@ -7,6 +7,7 @@
 <p><img class="img-article-left" src="{{gem.photo.url}}"></p>
 {% endif %}
     <p>Характеристики</p>
+<br>{% if gem.gem_image %}{{ gem.gem_image }}{% endif %}
 <br>Тип: {{ gem.type}}
 <br>Размер: {{ gem.size}}
 <br>Чистота:{{ gem.clarity}}
