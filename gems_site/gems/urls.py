@@ -1,7 +1,7 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
 
-from gems.views import GemsHome, CreateGem, RegisterUser, LoginUser, Basket, Profile, ShowProfilePageView, \
+from gems.views import GemsHome, CreateGem, RegisterUser, LoginUser, ShowProfilePageView, \
     logout_user, change_password, ResetPasswordView, ShowGem, ShowMyGems, UpdateProfile, EditGem
 
 urlpatterns = [
@@ -9,7 +9,6 @@ urlpatterns = [
     path('create_gem/', CreateGem.as_view(), name='create_gem'),
     path('register/', RegisterUser.as_view(), name='register'),
     path('login/', LoginUser.as_view(), name='login'),
-    path('basket/', Basket.as_view(), name='basket'),
     path('profile/', ShowProfilePageView.as_view(), name='profile'),
     path('update_profile/', UpdateProfile.as_view(), name='update_profile'),
     path('logout/', logout_user, name='logout'),
